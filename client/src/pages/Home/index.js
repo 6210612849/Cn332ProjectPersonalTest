@@ -28,13 +28,6 @@ import Dashboard from "../Dashboard";
 import { height, textAlign } from "@mui/system";
 
 
-
-
-
-
-
-
-
 const Home = () => {
   useUserRequired();
 
@@ -61,7 +54,11 @@ const Home = () => {
     );
   }
 
-  //console.log(user);
+  if(user.status == 'S', 'Student'){
+    console.log("hello")
+  }
+  
+  console.log(typeof(user.status));
 
   return (
     <Container className="py-4" style={{ backgroundColor: "#edf1f5", }}>

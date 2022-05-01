@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, } from 'react'
+import React, { useContext, useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import UserContext from '../UserContext';
 import { logout } from '../../pages/Home/sdk';
@@ -17,24 +17,32 @@ import {
 import { useUserRequired } from '../../utils/hooks';
 import '../AppNav/App.css'
 
+
 const AppNav = () => {
   useUserRequired();
 
   const history = useHistory();
   const { user, setUser } = useContext(UserContext);
+  const [ isLogin, setIsLogin ] = useState(false)
 
   const handleLogout = useCallback(() => {
     logout().then(() => {
       setUser(null);
+      //setIsLogin(true);
       history.push(LOGIN_URL);
     });
   }, [setUser, history]);
 
-  /* console.log("!user")
-  console.log(!user)
 
-  console.log("user")
-  console.log(user) */
+  useEffect(() => {
+    //console.log("in appnav")
+    /* if (!user) {
+      setIsLogin(prev => !prev);
+    } */
+  }, [isLogin, setIsLogin]);
+  
+  
+
 
   return (<Navbar expand="lg" >
     <Container className='justify-content-md-center'>
@@ -85,7 +93,7 @@ const AppNav = () => {
 
         </NavDropdown>
         <div>
-          {!user
+          {isLogin
             ? <NavDropdown.Item href={LOGIN_URL}>Login</NavDropdown.Item>
             : <NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>}
         </div>

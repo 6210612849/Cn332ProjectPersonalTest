@@ -39,9 +39,9 @@ const Routes = () => {
 
 
 
-        {/* <Route path="*">
+        <Route path="*">
           <Redirect to={HOME_URL} />
-        </Route> */}
+        </Route>
       </Switch>
     </Router>
   );

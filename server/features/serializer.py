@@ -50,13 +50,13 @@ class CommentSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'title', 'status', 'owner', 'adviser', 'Facility', 'File_url', 'Detail']
+        fields = ['id','title','status','owner','adviser','Facility','File_url','Detail','progress']
 
 
 class ProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Progressions
-        fields = ['id', 'title', 'owner', 'project', 'description', 'timestamp']
+        fields = ['id', 'title','owner', 'project' ,'description','timestamp','review']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
