@@ -13,6 +13,7 @@ from users.models import *
 from users.selectors import *
 from rest_framework.response import Response
 from users.serializer import ProflieSerializer
+from rest_framework import filters
 # Create your views here.
 
 from .models import *
@@ -179,3 +180,12 @@ class ProjectOwnerAll(ApiAuthMixin,generics.ListAPIView):
 class ProfressorList(generics.ListAPIView):
     queryset = Profile.objects.filter(status='P')
     serializer_class = ProflieSerializer
+
+class PostListDetailfilter(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = serializer.PostSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['$title']
+
+    # $ regex search
+    # start with search

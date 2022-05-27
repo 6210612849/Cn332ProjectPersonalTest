@@ -44,7 +44,7 @@ const Createproject = () => {
     event.preventDefault();
     const data = {
       title: formData.title,
-      owner: [prof.pk],
+      owner: formData.owner,
       adviser: [formData.adviser],
       status: formData.status,
       Facility: formData.Facility,
@@ -123,6 +123,15 @@ const Createproject = () => {
 
 
           </select>
+        </label>
+        <br></br>
+        <label> Ownerr:
+          <input
+            type="text"
+            name="owner"
+            value={formData.owner || ""}
+            onChange={handleChange}
+          />
         </label>
         <br></br>
 

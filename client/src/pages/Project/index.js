@@ -94,9 +94,10 @@ const Project = () => {
                 console.log("i'm S")
                 setIsTeacher(false)
                 get_myproject().then((resp) => {
-                    setProjects(resp.data);
+                    setProject(resp.data[0]);
         
                 });
+                
 
             }
         }

@@ -25,6 +25,7 @@ urlpatterns = [
     path('reviews/', views.ReviewList.as_view()),
     path('reviews/<int:pk>/', views.ReviewUpdate.as_view()),
     path('professor/', views.ProfressorList.as_view()),
+    path('search/', views.PostListDetailfilter.as_view()),
     
 
 ]

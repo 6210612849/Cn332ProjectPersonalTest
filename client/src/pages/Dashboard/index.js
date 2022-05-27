@@ -25,6 +25,7 @@ import { useUserRequired } from "../../utils/hooks";
 
 
 const getPost = () => getFeature("posts/");
+const getSearchedPost = (title) => getFeature(`search/?search=${title}`)
 
 const post_POST = (data) => postFeature("create_post/", data);
 const getComment = () => getFeature("comments/<int:pk>/");
@@ -37,6 +38,8 @@ const Dashboard = () => {
   const [samplePost, setSamplePost] = useState([])
   const { user, setUser } = useContext(UserContext);
   const [isStudent, setIsStudent] = useState(false);
+  const [searchedPost, setSearchedPost] = useState([]);
+  const [searchForm, setSearchForm] = useState({});
 
   useEffect(() => {
     getPost().then((resp) => {
@@ -44,20 +47,38 @@ const Dashboard = () => {
 
     });
 
-    if(user){
+    getSearchedPost(searchForm.title).then((resp) => {
+      setSearchedPost(resp.data);
+
+    });
+
+    if (user) {
       //console.log("hello")
-      if(user.status == 'S'){
+      if (user.status == 'S') {
         setIsStudent((prev) => (!prev))
       }
-      
+
       //setIsStudent(prev => !prev)
     }
 
-    
-  }, [])
+
+  }, [searchForm])
+
+
+  const handleSearchForm = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    //console.log(inputs.description);
+    setSearchForm((values) => ({ ...values, [name]: value }));
+    //console.log("after change" + inputs.description);
+  }
 
   console.log(isStudent)
-  
+
+  console.log("search")
+  console.log(searchedPost)
+  console.log("search done")
+
   function lower(obj) {
     var i = 0;
     for (var prop in obj) {
@@ -93,7 +114,7 @@ const Dashboard = () => {
           <Col md="7">
             <div className="home">
               <div className="feed_warp">
-                {samplePost.map((post, index) =>
+                {searchedPost.map((post, index) =>
                 (
                   <div className="dashboard_bar">
                     {
@@ -147,8 +168,17 @@ const Dashboard = () => {
             </div>
           </Col>
           <Col md="2">
-            
+
             <PostForm />
+
+            <Label>Search :
+              <input
+                type="text"
+                name="title"
+                value={searchForm.title || ""}
+                onChange={handleSearchForm}
+              />
+            </Label>
           </Col>
         </Row>
 
@@ -219,6 +249,5 @@ const PostForm = () => {
     </>
   )
 }
-
 
 export default Dashboard;
