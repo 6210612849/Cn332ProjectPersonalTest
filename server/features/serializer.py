@@ -63,3 +63,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['progress', 'owner', 'status', 'comments', 'timestamp']
+
+
+class ProjectOwnerAllSerializer(serializers.ModelSerializer):
+    
+
+    class Meta:
+        model = Project
+        fields = ['id','title','status','owner','adviser','Facility','File_url','Detail','progress']

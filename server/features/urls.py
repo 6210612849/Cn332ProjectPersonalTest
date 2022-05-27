@@ -18,8 +18,13 @@ urlpatterns = [
     path('create_post/', views.getFormDetailFrontend.as_view()),
     path('create_project/', views.CreateProject.as_view()),
     path('project/<int:pk>/', views.ProjectDetail.as_view()),
+    path('project/projectownerall/', views.ProjectOwnerAll.as_view()),
+    path('project/projectadviserall/', views.ProjectAdviserAll.as_view()),
     path('progress/', views.Progress.as_view()),
     path('progress/<int:pk>/', views.ProgressUpdate.as_view()),
     path('reviews/', views.ReviewList.as_view()),
     path('reviews/<int:pk>/', views.ReviewUpdate.as_view()),
+    path('professor/', views.ProfressorList.as_view()),
+    
+
 ]

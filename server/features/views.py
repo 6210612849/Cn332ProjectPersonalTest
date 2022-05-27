@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from users.models import *
 from users.selectors import *
 from rest_framework.response import Response
+from users.serializer import ProflieSerializer
 # Create your views here.
 
 from .models import *
@@ -148,3 +149,33 @@ class ReviewUpdate(ApiAuthMixin, generics.RetrieveUpdateDestroyAPIView):
     def perform_delete(self, serializer):
         if(serializer.owner == self.request.user):
             serializer.delete()
+
+class ProjectAdviserAll(ApiAuthMixin,generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = serializer.ProjectOwnerAllSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        profile_used = Profile.objects.get(email=self.request.user)
+        
+       
+        ##print("projectadviser",queryset.filter(adviser=2))
+        
+        return queryset.filter(adviser=profile_used)
+
+class ProjectOwnerAll(ApiAuthMixin,generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = serializer.ProjectOwnerAllSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        profile_used = Profile.objects.get(email=self.request.user)
+        
+       
+        ##print("projectadviser",queryset.filter(adviser=2))
+        
+        return queryset.filter(owner=profile_used)
+
+class ProfressorList(generics.ListAPIView):
+    queryset = Profile.objects.filter(status='P')
+    serializer_class = ProflieSerializer

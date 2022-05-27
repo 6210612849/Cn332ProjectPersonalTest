@@ -34,27 +34,9 @@ const AppNav = () => {
 
 
   useEffect(() => {
-    if (!user) {
-      //console.log("call false")
-      setIsLogin(true)
-      //console.log(history)
-
-    } else {
-      //console.log("call true")
-      setIsLogin(false)
-      //console.log(typeof (user.detail))
-    }
-    /* console.log("history")
-    console.log(history)
-   
-    console.log("user")
-    console.log(user) */
-    //console.log("in appnav")
-    /* if (!user) {
-      setIsLogin(prev => !prev);
-    } */
-  }, [history, user]);
-
+    console.log("in usesdadsadsads")
+    setIsLogin(prev => !prev)
+  }, [user]);
 
 
 
@@ -102,7 +84,7 @@ const AppNav = () => {
           <Button variant="outline-secondary">Search</Button>
         </Form>
         <NavDropdown title="Link" id="navbarScrollingDropdown" className="d-flex me-2 justify-content-end auto">
-          <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
+          <NavDropdown.Item href={Profile_URL}>Profile</NavDropdown.Item>
           <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
           <NavDropdown.Divider />
 

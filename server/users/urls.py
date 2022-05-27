@@ -11,5 +11,7 @@ urlpatterns = [
     path('update/', updateTodo.as_view(), name='testget'),
     path('testPUT/', testPUT.as_view(), name='testPUT'),
     path('getProfileView/<int:id>/',  getProfileView.as_view(), name='getProfileView'),
+    
+    
 
 ]

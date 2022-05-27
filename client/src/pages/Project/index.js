@@ -35,11 +35,15 @@ import { textAlign, unstable_getThemeValue } from '@mui/system';
 
 */
 
+
 //const updateProfile = (sample) => putUser("users/testPUT/", sample);
 const get_project = (project_id) => getFeature(`project/${project_id}/`);
 const get_prog = (prog_id) => getFeature(`progress/${prog_id}/`);
 const get_posts = (postsId) => getFeature(`posts/${postsId}`)
 const get_review = (review_id) => getFeature(`reviews/${review_id}`)
+const get_projects = () => getFeature(`project/projectadviserall/`)
+const get_myproject = () => getFeature('project/projectownerall/')
+
 
 const post_prog = (data) => postFeature("progress/", data);
 const post_review = (data) => postFeature("reviews/", data);
@@ -52,50 +56,161 @@ const Project = () => {
     useUserRequired();
 
     const [project, setProject] = useState({});
+    const [projects, setProjects] = useState([]);
 
     const [posts, setPosts] = useState();
     const [url, setUrl] = useState("");
+    const [isTeacher, setIsTeacher] = useState(false);
+    const [step, setStep] = useState(0);
+
 
     const history = useHistory();
     const { user, setUser } = useContext(UserContext);
 
 
     useEffect(() => {
-        get_project(3).then((resp) => {
+        
+        /* if (projects.length === 1) {
+            get_project(projects[0].id).then((resp) => {
+                setProject(resp.data);
+
+            });
+        } */
+
+        if (!user !== true) {
+            console.log("fffffffffffffffffffff")
+            console.log(user.status)
+            console.log("fffffffffffffffffffff")
+            if (user.status === 'Professor' || user.status === 'P') {
+                console.log("i'm P")
+                setIsTeacher(true);
+                get_projects().then((resp) => {
+                    setProjects(resp.data);
+        
+                });
+                setStep(1)
+
+            } else if (user.status === 'Student' || user.status === 'S') {
+                console.log("i'm S")
+                setIsTeacher(false)
+                get_myproject().then((resp) => {
+                    setProjects(resp.data);
+        
+                });
+
+            }
+        }
+
+    }, [user, isTeacher]);
+
+    const handleOnClick = (test) => {
+        console.log(test)
+
+        if (step !== 1) {
+            setStep(1);
+            /* get_project(id).then((resp) => {
+                setProject(resp.data);
+
+            }); */
+        } else {
+            console.log("i'm in setp 0")
+            setStep(0);
+        }
+
+    }
+
+    const changeProject = (id) => {
+        console.log("hello " + id)
+        get_project(id).then((resp) => {
             setProject(resp.data);
 
         });
+        setStep(0);
+    }
 
-    }, []);
+    console.log("f u")
+    console.log(projects)
+    console.log("f u")
 
+    console.log("project")
     console.log(project)
 
-    return (
-        <Container>
-            <Row md="6">
-                <Col md="8">
-                    <h1>Project Detail</h1>
-                    <Label>
-                        project id: {project.id}
-                        project owner id: {project.owner}
-                        project adviser id: {project.adviser}
-                        project status: {project.status}
-                        project detail: {project.Detail}
-                    </Label>
+    switch (step) {
+        case 0:
+            return (
+                <Container>
+                    
+                    
+                    <Row md="6">
+                        <Col md="8">
 
-                    <Prog progs={project.progress} />
-                </Col>
+                            <h1>Project Detail</h1>
+                            {isTeacher ? <Button onClick={handleOnClick}>select project</Button> : <></>}
+                            
+                            <Label>
+                                project id: {project.id}
+                                 project owner id: {project.owner}
+                                 project adviser id: {project.adviser}
+                                 project status: {project.status}
+                                 project detail: {project.Detail}
+                            </Label>
 
-                <Col md="2">
-                    <ProgressForm user={user} project={project} />
-                </Col>
+                            <Prog progs={project.progress} isTeacher={isTeacher}/>
+                        </Col>
 
-            </Row>
+                        <Col md="2">
+                            {isTeacher ?
+                                <></> :
+                                <ProgressForm user={user} project={project} />
+                            }
 
-        </Container>
+                        </Col>
+
+                    </Row>
 
 
-    )
+                </Container>
+
+
+            )
+
+        case 1:
+
+            return (
+                /* ตรงนี้จะเป็นที่แสดง project ทั้งหทดของ อาจารย์ 
+                    และเมื่อทำการเลือกจะเป็นการเปลี่ยน step กลับไปที่ 0 พร้อมกับ pk ของ 
+                    project ที่เลือกและจะได้ทำเรื่องต่างๆได้เช่น การให้ review กับ prog ที่นักศึกษาให้มา
+
+                 */
+                <Container>
+                    <h1>select a project</h1>
+                    <>
+                        if u r teacher this page will display all project u have
+                    </>
+                    
+                    <ListGroup>
+                        {projects.map((p, index) => {
+                            return (
+                                <ListGroupItem onClick={() => {
+                                    changeProject(p.id);
+                                }}>
+                                    <Label>id:{p.id} title:{p.title} owenr:{p.owner} adviser:{p.adviser}</Label>
+
+                                    
+                                </ListGroupItem>
+
+                            )
+                        })}
+                        
+                    </ListGroup>
+                </Container >
+            )
+
+
+
+    }
+
+
 }
 
 const Prog = (props) => {
@@ -103,17 +218,18 @@ const Prog = (props) => {
     const [progress, setProgress] = useState([]);
     const [getValue, setGetValue] = useState(true);
     var prog_list = props.progs
+    var isTeacher = props.isTeacher
 
     function test(prog) {
 
         for (var p in prog) {
-            console.log("hi")
-            console.log(p)
-            console.log(prog[p])
+            //console.log("hi")
+            //console.log(p)
+            //console.log(prog[p])
 
             get_prog(parseInt(prog[p])).then((resp) => {
-                console.log("datas")
-                console.log(resp.data)
+                //console.log("datas")
+                //console.log(resp.data)
                 setProgress(prev => [...prev, (resp.data)]);
             });
         }
@@ -148,7 +264,10 @@ const Prog = (props) => {
                                             </ListGroup>
                                         </Col>
                                         <Col md="2">
-                                            <ReviewForm id={p.id} />
+                                            {isTeacher ?
+                                                <ReviewForm id={p.id} /> : <></>
+                                            }
+
                                         </Col>
 
                                     </Row>
