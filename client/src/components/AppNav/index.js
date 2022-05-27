@@ -19,29 +19,44 @@ import '../AppNav/App.css'
 
 
 const AppNav = () => {
-  useUserRequired();
+  //useUserRequired();
 
   const history = useHistory();
   const { user, setUser } = useContext(UserContext);
-  const [ isLogin, setIsLogin ] = useState(false)
+  const [isLogin, setIsLogin] = useState(false)
 
   const handleLogout = useCallback(() => {
     logout().then(() => {
-      setUser(null);
-      //setIsLogin(true);
+      //setUser(null);
       history.push(LOGIN_URL);
     });
   }, [setUser, history]);
 
 
   useEffect(() => {
+    if (!user) {
+      //console.log("call false")
+      setIsLogin(true)
+      //console.log(history)
+
+    } else {
+      //console.log("call true")
+      setIsLogin(false)
+      //console.log(typeof (user.detail))
+    }
+    /* console.log("history")
+    console.log(history)
+   
+    console.log("user")
+    console.log(user) */
     //console.log("in appnav")
     /* if (!user) {
       setIsLogin(prev => !prev);
     } */
-  }, [isLogin, setIsLogin]);
-  
-  
+  }, [history, user]);
+
+
+
 
 
   return (<Navbar expand="lg" >
@@ -93,8 +108,10 @@ const AppNav = () => {
 
         </NavDropdown>
         <div>
+          {/* <NavDropdown.Item href={LOGIN_URL}>Login</NavDropdown.Item> */}
+
           {isLogin
-            ? <NavDropdown.Item href={LOGIN_URL}>Login</NavDropdown.Item>
+            ?  <></>
             : <NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>}
         </div>
 

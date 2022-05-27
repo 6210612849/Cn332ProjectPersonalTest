@@ -30,20 +30,34 @@ const post_POST = (data) => postFeature("create_post/", data);
 const getComment = () => getFeature("comments/<int:pk>/");
 
 const Dashboard = () => {
+  useUserRequired();
 
   let history = useHistory();
 
   const [samplePost, setSamplePost] = useState([])
-
-  const [isStudent, setIsStudent] = useState(true);
+  const { user, setUser } = useContext(UserContext);
+  const [isStudent, setIsStudent] = useState(false);
 
   useEffect(() => {
     getPost().then((resp) => {
       setSamplePost(resp.data);
 
     });
+
+    if(user){
+      //console.log("hello")
+      if(user.status == 'S'){
+        setIsStudent((prev) => (!prev))
+      }
+      
+      //setIsStudent(prev => !prev)
+    }
+
+    
   }, [])
 
+  console.log(isStudent)
+  
   function lower(obj) {
     var i = 0;
     for (var prop in obj) {
@@ -133,6 +147,7 @@ const Dashboard = () => {
             </div>
           </Col>
           <Col md="2">
+            
             <PostForm />
           </Col>
         </Row>
