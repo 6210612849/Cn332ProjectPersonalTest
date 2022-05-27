@@ -25,7 +25,7 @@ import { useUserRequired } from "../../utils/hooks";
 
 
 const getPost = () => getFeature("posts/");
-const getSearchedPost = (title) => getFeature(`search/?search=${title}`)
+const getSearchedPost = (title) => getFeature(`search/post/?search=${title}`)
 
 const post_POST = (data) => postFeature("create_post/", data);
 const getComment = () => getFeature("comments/<int:pk>/");
@@ -39,14 +39,10 @@ const Dashboard = () => {
   const { user, setUser } = useContext(UserContext);
   const [isStudent, setIsStudent] = useState(false);
   const [searchedPost, setSearchedPost] = useState([]);
-  const [searchForm, setSearchForm] = useState({});
+  const [searchForm, setSearchForm] = useState({title: ""});
 
   useEffect(() => {
-    getPost().then((resp) => {
-      setSamplePost(resp.data);
-
-    });
-
+    
     getSearchedPost(searchForm.title).then((resp) => {
       setSearchedPost(resp.data);
 
@@ -71,6 +67,9 @@ const Dashboard = () => {
     //console.log(inputs.description);
     setSearchForm((values) => ({ ...values, [name]: value }));
     //console.log("after change" + inputs.description);
+    console.log("title")
+    console.log(searchForm.title)
+    console.log("title")
   }
 
   console.log(isStudent)

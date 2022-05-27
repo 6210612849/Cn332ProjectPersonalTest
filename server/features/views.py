@@ -189,3 +189,13 @@ class PostListDetailfilter(generics.ListAPIView):
 
     # $ regex search
     # start with search
+
+
+class ProjectsListDetailfilter(generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = serializer.ProjectSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['$title']
+
+    # $ regex search
+    # start with search
