@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { getFeature, postFeature } from "../../utils/sdk";
 import { getUser } from "../../utils/sdk";
+import { useUserRequired } from "../../utils/hooks";
+import { UserContext } from "../../components";
+
 
 const create_project = (data) => postFeature('create_project/', data)
 const get_profile = () => getUser('users/me/');
 const get_professor = () => getFeature('professor/');
+const get_student = () => getFeature('student/');
+
 
 const Createproject = () => {
+  useUserRequired();
+
+  const { user, setUser } = useContext(UserContext);
 
   //var professer = ["", 1, 2, 3, 4, 5]
 
   const [professor, setProfessor] = useState([])
+  const [student, setStudent] = useState([])
   const [formData, setFormData] = useState({});
   const [prof, setProf] = useState([]);
 
@@ -26,9 +35,14 @@ const Createproject = () => {
       setProfessor(resp.data);
 
     });
+    get_student().then((resp) => {
+      setStudent(resp.data);
+
+    });
+
   }, []);
 
-  console.log(professor)
+  console.log(student)
 
   const handleChange = (event) => {
     console.log(formData)
@@ -54,13 +68,9 @@ const Createproject = () => {
 
     };
 
-    if (formData.adviser !== undefined) {
-      console.log(data)
-      create_project(data);
-      console.log("in submit");
-    } else {
-      console.log("fail to submit")
-    }
+    console.log(data)
+    create_project(data);
+    console.log("in submit");
 
     /* post_POST(data).then(() => {
       getPost().then((resp) => {
@@ -77,12 +87,10 @@ const Createproject = () => {
   return (
 
 
-    <Container>
+    <Container className='justify-content-md-center'>
       {/* requirement
         ที่กรอกฟอร์มสำหรับ adviser ต้องเป็น option
         โดยที่เราจะดึง profile ของอาจารย์ทั้งหมดออกมา
-
-
       */}
       <h1>create project</h1>
 
@@ -109,7 +117,6 @@ const Createproject = () => {
 
         <br></br>
 
-
         <label>
           adviser:
           <select name="adviser" value={formData.value} onChange={handleChange}>
@@ -120,19 +127,23 @@ const Createproject = () => {
                 </>
               )
             })}
-
-
           </select>
         </label>
         <br></br>
-        <label> Ownerr:
-          <input
-            type="text"
-            name="owner"
-            value={formData.owner || ""}
-            onChange={handleChange}
-          />
+
+        <label>
+          owner:
+          <select name="owner" value={formData.value} onChange={handleChange}>
+            {student.map((p, index) => {
+              return (
+                <>
+                  <option value={p.id} >{p.first_name} {p.last_name}</option>
+                </>
+              )
+            })}
+          </select>
         </label>
+
         <br></br>
 
         <label> facility:

@@ -25,6 +25,7 @@ import "../../App.css";
 
 const getProjects = () => getFeature("create_project/");
 const getSearchedProjects = (title) => getFeature(`search/projects/?search=${title}`)
+const getSearchedProfile = (id) => getFeature(`search/profile/?search=${id}`)
 
 
 const Documents = () => {
@@ -63,28 +64,8 @@ const Documents = () => {
           <ListGroup as="ol" numbered>
             {searchedProjects.map((project, index) => (
 
-              <ListGroup.Item
-                as="li"
-                className="d-flex justify-content-between align-items-start justify-content-end"
-                key={index}
-              >
-                <div className="ms-2 me-auto">
-                  {/* 'id','title','status','owner','adviser','Facility','File_url','Detail' */}
-                  <div className="fw-bold">{project.title}</div>
+              <ProjectCard project={project}></ProjectCard>
 
-                  <label>{project.body}</label><br></br>
-                  <label>{project.owner}</label><br></br>
-                  <label>this is id {project.id}</label><br></br>
-                  <label>this is status {project.status}</label><br></br>
-                  <label>this is owneer id{project.owner}</label><br></br>
-                  <label>this is adviser {project.adviser}</label><br></br>
-                  <label>this is Facility {project.Facility}</label><br></br>
-                  <label>this is file {project.File_url}</label><br></br>
-                  <label>this is detail {project.Detail}</label><br></br>
-
-                </div>
-
-              </ListGroup.Item>
             )
             )}
           </ListGroup>
@@ -110,3 +91,60 @@ const Documents = () => {
 
 
 export default Documents;
+
+const ProjectCard = (props) => {
+
+  var project = props.project
+  console.log(project)
+  var owner = project.owner
+  var professor = project.adviser
+
+  const [searchedOwner, setSearchedOwner] = useState([])
+  const [searchedProfessor, setSearchedProfessor] = useState([])
+
+  useEffect(() => {
+    console.log("call useEff")
+    getSearchedProfile(owner).then((resp) => {
+      setSearchedOwner(resp.data);
+
+    });
+
+    getSearchedProfile(professor[0]).then((resp) => {
+      setSearchedProfessor(resp.data);
+
+    });
+  }, [])
+
+  return (
+    <>
+      <ListGroup.Item
+        as="li"
+        className="d-flex justify-content-between align-items-start justify-content-end"
+      >
+        <div className="ms-2 me-auto">
+          {/* 'id','title','status','owner','adviser','Facility','File_url','Detail' */}
+          <div className="fw-bold">{project.title}</div>
+          <label>this is status {project.status}</label><br></br>
+          {(searchedProfessor.length > 0) ?
+            <><label>this is adviser {searchedProfessor[0].first_name} {searchedProfessor[0].last_name}</label><br></br></> :
+            <></>
+          }
+          {(searchedOwner.length > 0) ?
+            <>{searchedOwner.map((profile, index) => (
+              <>
+                <label>this is owner {profile.first_name} {profile.last_name}</label><br></br>
+              </>
+            ))}
+            </> :
+            <></>
+          }
+
+          <label>Facility: {project.Facility}</label><br></br>
+          <label>file:     {project.File_url}</label><br></br>
+          <label>Detail:   {project.Detail}</label><br></br>
+
+        </div>
+
+      </ListGroup.Item></>
+  )
+}

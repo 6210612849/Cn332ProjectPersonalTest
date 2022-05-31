@@ -130,7 +130,6 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class Progress(ApiAuthMixin, generics.ListCreateAPIView):
-    print("in prog")
     queryset = Progressions.objects.all()
     serializer_class = serializer.ProgressSerializer
 
@@ -210,6 +209,10 @@ class ProjectOwnerAll(ApiAuthMixin, generics.ListAPIView):
 
 class ProfressorList(generics.ListAPIView):
     queryset = Profile.objects.filter(status='P')
+    serializer_class = ProflieSerializer
+
+class StudentList(generics.ListAPIView):
+    queryset = Profile.objects.filter(status='S')
     serializer_class = ProflieSerializer
 
 

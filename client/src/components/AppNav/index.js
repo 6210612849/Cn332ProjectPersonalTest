@@ -24,6 +24,7 @@ const AppNav = () => {
   const history = useHistory();
   const { user, setUser } = useContext(UserContext);
   const [isLogin, setIsLogin] = useState(false)
+  const [isTeacher, setIsTeacher] = useState(false);
 
   const handleLogout = useCallback(() => {
     logout().then(() => {
@@ -36,6 +37,18 @@ const AppNav = () => {
   useEffect(() => {
     console.log("in usesdadsadsads")
     setIsLogin(prev => !prev)
+
+    if (!user !== true) {
+      if (user.status === 'Professor' || user.status === 'P') {
+        console.log("i'm P")
+        setIsTeacher(true);
+
+      } else if (user.status === 'Student' || user.status === 'S') {
+        console.log("i'm S")
+        setIsTeacher(false)
+
+      }
+    }
   }, [user]);
 
   console.log(isLogin)
@@ -60,44 +73,32 @@ const AppNav = () => {
 
         <Nav.Link href={Dashboard_URL}><h5>Dashboard
         </h5></Nav.Link>
-
-
         <Nav.Link href={Documents_URL}><h5>Project Documents
-        </h5></Nav.Link>
-
-        <Nav.Link href={GoogleCalendar_URL}><h5>Calendar
         </h5></Nav.Link>
         <Nav.Link href={Project_URL}><h5>Project
         </h5></Nav.Link>
-        <Nav.Link href={Createproject_URL}><h5>Createproject
-        </h5></Nav.Link>
-      </Nav>
-      <Navbar.Toggle aria-controls="navbarScroll" />
-      <Navbar.Collapse id="navbarScroll" className="justify-content-end">
-        <Form className="d-flex">
-          <FormControl
-            type="search"
-            placeholder="Search"
-            className="me-2"
-            aria-label="Search"
-          />
-          <Button variant="outline-secondary">Search</Button>
-        </Form>
-        <NavDropdown title="Link" id="navbarScrollingDropdown" className="d-flex me-2 justify-content-end auto">
-          <NavDropdown.Item href={Profile_URL}>Profile</NavDropdown.Item>
-          <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
-          <NavDropdown.Divider />
 
-        </NavDropdown>
-        <div>
-          {/* <NavDropdown.Item href={LOGIN_URL}>Login</NavDropdown.Item> */}
+        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Collapse id="navbarScroll" className="justify-content-end">
 
-          {isLogin
-            ? <></>
-            : <NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>}
-        </div>
+          <NavDropdown title="Link" id="navbarScrollingDropdown" className="d-flex me-2 justify-content-end auto">
+            <NavDropdown.Item href={Profile_URL}>Profile</NavDropdown.Item>
+            {isTeacher ? 
+            <NavDropdown.Item href={Createproject_URL}>Create Profile</NavDropdown.Item>
+              : <></>}
 
-      </Navbar.Collapse>
+
+          </NavDropdown>
+          <div>
+            {/* <NavDropdown.Item href={LOGIN_URL}>Login</NavDropdown.Item> */}
+
+            {isLogin
+              ? <></>
+              : <NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>}
+          </div>
+
+        </Navbar.Collapse>
+        </Nav>
     </Container>
   </Navbar>)
 }

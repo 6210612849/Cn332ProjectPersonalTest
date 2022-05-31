@@ -47,6 +47,7 @@ const get_myproject = () => getFeature('project/projectownerall/')
 
 const post_prog = (data) => postFeature("progress/", data);
 const post_review = (data) => postFeature("reviews/", data);
+const getSearchedProfile = (id) => getFeature(`search/profile/?search=${id}`)
 
 
 
@@ -57,6 +58,8 @@ const Project = () => {
 
     const [project, setProject] = useState({});
     const [projects, setProjects] = useState([]);
+    const [projectTeacher, setProjectTeacher] = useState([]);
+    const [projectStudent, setProjectStudent] = useState([]);
 
     const [posts, setPosts] = useState();
     const [url, setUrl] = useState("");
@@ -69,7 +72,7 @@ const Project = () => {
 
 
     useEffect(() => {
-        
+
         /* if (projects.length === 1) {
             get_project(projects[0].id).then((resp) => {
                 setProject(resp.data);
@@ -86,7 +89,7 @@ const Project = () => {
                 setIsTeacher(true);
                 get_projects().then((resp) => {
                     setProjects(resp.data);
-        
+
                 });
                 setStep(1)
 
@@ -95,9 +98,9 @@ const Project = () => {
                 setIsTeacher(false)
                 get_myproject().then((resp) => {
                     setProject(resp.data[0]);
-        
+
                 });
-                
+
 
             }
         }
@@ -126,6 +129,15 @@ const Project = () => {
             setProject(resp.data);
 
         });
+        getSearchedProfile(project.adviser).then((resp) => {
+            setProjectTeacher(resp.data)
+
+        });
+        getSearchedProfile(project.owner).then((resp) => {
+            setProjectStudent(resp.data)
+
+        });
+        
         setStep(0);
     }
 
@@ -138,42 +150,48 @@ const Project = () => {
 
     switch (step) {
         case 0:
-            return (
-                <Container>
-                    
-                    
-                    <Row md="6">
-                        <Col md="8">
-
-                            <h1>Project Detail</h1>
-                            {isTeacher ? <Button onClick={handleOnClick}>select project</Button> : <></>}
-                            
-                            <Label>
-                                project id: {project.id}
-                                 project owner id: {project.owner}
-                                 project adviser id: {project.adviser}
-                                 project status: {project.status}
-                                 project detail: {project.Detail}
-                            </Label>
-
-                            <Prog progs={project.progress} isTeacher={isTeacher}/>
-                        </Col>
-
-                        <Col md="2">
-                            {isTeacher ?
-                                <></> :
-                                <ProgressForm user={user} project={project} />
-                            }
-
-                        </Col>
-
-                    </Row>
+            if (project.owner !== undefined && project.adviser !== undefined) {
+                return (
+                    <Container>
 
 
-                </Container>
+                        <Row md="6">
+                            <Col md="8">
+
+                                <h1>Project Detail</h1>
+                                {isTeacher ? <Button onClick={handleOnClick}>select project</Button> : <></>}
+
+                                <Label>
+                                    Owner: {(projectStudent.length !== 0)?projectStudent[0].first_name:user.first_name} <br></br>
+                                    Adviser : {(projectTeacher.length !== 0)?projectTeacher[0].first_name:user.first_name} <br></br>
+                                    status: {project.status} <br></br>
+                                    project detail: {project.Detail} <br></br>
+                                </Label>
+
+                                <Prog progs={project.progress} isTeacher={isTeacher} />
+                            </Col>
+
+                            <Col md="2">
+                                {isTeacher ?
+                                    <></> :
+                                    <ProgressForm user={user} project={project} />
+                                }
+
+                            </Col>
+
+                        </Row>
 
 
-            )
+                    </Container>
+
+
+                )
+            } else {
+                return(
+                    <></>
+                )
+            }
+
 
         case 1:
 
@@ -188,7 +206,7 @@ const Project = () => {
                     <>
                         if u r teacher this page will display all project u have
                     </>
-                    
+
                     <ListGroup>
                         {projects.map((p, index) => {
                             return (
@@ -197,12 +215,12 @@ const Project = () => {
                                 }}>
                                     <Label>id:{p.id} title:{p.title} owenr:{p.owner} adviser:{p.adviser}</Label>
 
-                                    
+
                                 </ListGroupItem>
 
                             )
                         })}
-                        
+
                     </ListGroup>
                 </Container >
             )

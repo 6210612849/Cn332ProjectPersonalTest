@@ -27,6 +27,9 @@ import "../../App.css";
 import Dashboard from "../Dashboard";
 import { height, textAlign } from "@mui/system";
 
+const get_projects = () => getFeature(`project/projectadviserall/`)
+const get_myproject = () => getFeature('project/projectownerall/')
+
 
 const Home = () => {
   useUserRequired();
@@ -60,17 +63,7 @@ const Home = () => {
 
   return (
     <Container className="py-4" style={{ backgroundColor: "#edf1f5", }}>
-      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        {/* <h1> Hello! {user.first_name}</h1>
-        <button
-          class="btn btn-primary me-md-2"
-          type="button"
-          onClick={handleLogout}
-        >
-          LOGOUT
-        </button> */}
-      </div>
-
+      
       <Row >
         <Col className="col-12 d-inline-block " md="8">
           <Row>
@@ -136,7 +129,7 @@ const Home = () => {
                 style={{ backgroundColor: "#FFFFFF" }}
               >
 
-                <Schedule />
+                {/* <Schedule /> */}
 
               </Col>
             </Col>
@@ -146,14 +139,14 @@ const Home = () => {
                 md="12"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
-                <h5>Update Project</h5>
-                {/* Update Project */}
+                {/* <h5>Update Project</h5>
+                Update Project
                 <h6>
                   Project here Project here Project here Project here Project
                   here Project here Project here Project here Project here
                   Project here Project here Project hereProject hereProject
                   hereProject here
-                </h6>
+                </h6> */}
               </Col>
             </Col>
             <Col className="col-12  " md="4">
@@ -162,14 +155,14 @@ const Home = () => {
                 md="12"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
-                <h5>Contacts</h5>
-                {/*Contacts */}
+                {/* <h5>Contacts</h5>
+                
                 <h6>
                   Contact here Contact here Contact here Contact here Contact
                   here Contact here Contact here Contact here Contact here
                   Contact here Contact here Contact here Contact here Contact
                   here Contact here Contact here Contact here
-                </h6>
+                </h6> */}
               </Col>
             </Col>
           </Row>
