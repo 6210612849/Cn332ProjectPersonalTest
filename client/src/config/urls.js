@@ -8,4 +8,5 @@ export const GoogleCalendar_URL = "/Calen";
 export const Profile_URL = "/Profile";
 export const Documents_URL = "/Documents";
 export const Profile_view_URL = "/ProfileView/:id";
+export const Post_view_URL = "/PostView/:id";
 export const Dashboard_tags_URL = "/DashboardView/tags/:tags";

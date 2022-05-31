@@ -161,9 +161,11 @@ const DashboardTags = () => {
                                                             </span>
 
                                                         </Link>
-                                                        <div className="comment_body">
-                                                            {post.body}
-                                                        </div>
+                                                        <Link to={`/PostView/${post.id}`}>
+                                                            <div className="comment_title">
+                                                                {post.title}
+                                                            </div>
+                                                        </Link>
                                                         <div className="tags_body">
                                                             {post.tags.map((tag, index) => (
 

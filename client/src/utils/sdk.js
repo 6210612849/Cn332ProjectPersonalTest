@@ -41,6 +41,11 @@ export const getFeature = (url, options) =>
     .then(serializeResponse)
     .then(handle401);
 
+export const getPostView = (url, options) =>
+  fetch(`${BASE_FEATURE_URL}/${url}`, { ...getBaseConfig("get"), ...options })
+    .then(serializeResponse)
+    .then(handle401);
+
 
 
 // export const get = (url, options) =>

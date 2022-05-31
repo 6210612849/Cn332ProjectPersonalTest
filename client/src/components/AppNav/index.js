@@ -38,7 +38,7 @@ const AppNav = () => {
     setIsLogin(prev => !prev)
   }, [user]);
 
-
+  console.log(isLogin)
 
 
   return (<Navbar expand="lg" >
@@ -93,7 +93,7 @@ const AppNav = () => {
           {/* <NavDropdown.Item href={LOGIN_URL}>Login</NavDropdown.Item> */}
 
           {isLogin
-            ?  <></>
+            ? <></>
             : <NavDropdown.Item onClick={handleLogout}>logout</NavDropdown.Item>}
         </div>
 

@@ -12,8 +12,10 @@ from rest_framework.views import APIView
 from users.models import *
 from users.selectors import *
 from rest_framework.response import Response
+from taggit_serializer.serializers import (TagListSerializerField, TaggitSerializer)
 from users.serializer import ProflieSerializer
 from rest_framework import filters
+
 # Create your views here.
 
 from .models import *
@@ -53,6 +55,7 @@ class getFormDetailFrontend(ApiAuthMixin, ApiErrorsMixin, APIView):
     class InputSerializer(serializers.Serializer):
         title = serializers.CharField(required=False, default='')
         body = serializers.CharField(required=False, default='')
+        tags = TaggitSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.InputSerializer(data=request.data)
@@ -63,21 +66,36 @@ class getFormDetailFrontend(ApiAuthMixin, ApiErrorsMixin, APIView):
         owner = request.user
         title = serializer.validated_data.get("title")
         body = serializer.validated_data.get("body")
-
-        post = create_post(owner, title, body)
+        tags = request.data['tags']
+        print(type(tags), "-------------------------------------")
+        post = create_post(owner, title, body, tags)
 
         response = Response(data=respone_post(post=post))
 
         return response
 
 
-class CommentList(ApiAuthMixin, generics.ListCreateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = serializer.CommentSerializer
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class CommentList(ApiAuthMixin, ApiErrorsMixin, APIView):
+    class InputSerializer(serializers.Serializer):
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        body = serializers.CharField(required=False, default='')
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        owner = request.user
+        post = request.data["post"]
+        print("#####", post)
+        post = Post.objects.get(id=post)
+        print("#####", post)
+        body = serializer.validated_data.get("body")
+        print("------------", owner, body, post)
+        comment = create_comment(owner, body, post)
+        print("***************")
+        response = Response(data=respone_comment(comment=comment))
+
+        return response
 
 
 class CommentDetail(ApiAuthMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -151,35 +169,49 @@ class ReviewUpdate(ApiAuthMixin, generics.RetrieveUpdateDestroyAPIView):
         if(serializer.owner == self.request.user):
             serializer.delete()
 
-class ProjectAdviserAll(ApiAuthMixin,generics.ListAPIView):
+
+class getPostView(generics.ListCreateAPIView):
+    serializer_class = serializer.PostSerializer
+    queryset = Post.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(id=self.kwargs['id'])
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class ProjectAdviserAll(ApiAuthMixin, generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = serializer.ProjectOwnerAllSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
         profile_used = Profile.objects.get(email=self.request.user)
-        
-       
-        ##print("projectadviser",queryset.filter(adviser=2))
-        
+
+        # print("projectadviser",queryset.filter(adviser=2))
+
         return queryset.filter(adviser=profile_used)
 
-class ProjectOwnerAll(ApiAuthMixin,generics.ListAPIView):
+
+class ProjectOwnerAll(ApiAuthMixin, generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = serializer.ProjectOwnerAllSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
         profile_used = Profile.objects.get(email=self.request.user)
-        
-       
-        ##print("projectadviser",queryset.filter(adviser=2))
-        
+
+        # print("projectadviser",queryset.filter(adviser=2))
+
         return queryset.filter(owner=profile_used)
+
 
 class ProfressorList(generics.ListAPIView):
     queryset = Profile.objects.filter(status='P')
     serializer_class = ProflieSerializer
+
 
 class PostListDetailfilter(generics.ListAPIView):
     queryset = Post.objects.all()

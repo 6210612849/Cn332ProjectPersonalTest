@@ -58,7 +58,7 @@ const Createproject = () => {
       console.log(data)
       create_project(data);
       console.log("in submit");
-    }else{
+    } else {
       console.log("fail to submit")
     }
 
@@ -109,7 +109,7 @@ const Createproject = () => {
 
         <br></br>
 
-        
+
         <label>
           adviser:
           <select name="adviser" value={formData.value} onChange={handleChange}>

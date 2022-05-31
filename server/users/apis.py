@@ -8,9 +8,10 @@ from api.mixins import ApiErrorsMixin, ApiAuthMixin, PublicApiMixin
 
 from auth.services import jwt_login, google_validate_id_token
 
+
 from users.services import update_profile, user_get_or_create, post_todos, update_todos
 from users.selectors import *
-from users.models import Profile, Todo
+from users.models import Profile, Todo, User
 from users.serializer import *
 
 

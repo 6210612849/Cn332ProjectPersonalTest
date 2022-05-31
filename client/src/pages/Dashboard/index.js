@@ -4,6 +4,8 @@ import React, { useContext, useCallback, useState, useEffect } from "react";
 import { useHistory, Link, useParams } from "react-router-dom";
 import { getFeature, postFeature } from "../../utils/sdk";
 import { Comment, UserContext } from "../../components";
+import { Containers } from '../../popup/Containers';
+import '../../popup/App.css';
 
 import {
   Navbar,
@@ -25,7 +27,6 @@ import { useUserRequired } from "../../utils/hooks";
 
 
 const getPost = () => getFeature("posts/");
-const getSearchedPost = (title) => getFeature(`search/post/?search=${title}`)
 
 const post_POST = (data) => postFeature("create_post/", data);
 const getComment = () => getFeature("comments/<int:pk>/");
@@ -38,13 +39,19 @@ const Dashboard = () => {
   const [samplePost, setSamplePost] = useState([])
   const { user, setUser } = useContext(UserContext);
   const [isStudent, setIsStudent] = useState(false);
-  const [searchedPost, setSearchedPost] = useState([]);
-  const [searchForm, setSearchForm] = useState({title: ""});
+
+  const triggerText = 'Create Post';
+  const onSubmit = (event) => {
+    event.preventDefault(event);
+    console.log(event.target.title.value);
+    console.log(event.target.body.value);
+    console.log(event.target.tagsparent.value);
+
+  };
 
   useEffect(() => {
-    
-    getSearchedPost(searchForm.title).then((resp) => {
-      setSearchedPost(resp.data);
+    getPost().then((resp) => {
+      setSamplePost(resp.data);
 
     });
 
@@ -58,25 +65,9 @@ const Dashboard = () => {
     }
 
 
-  }, [searchForm])
-
-
-  const handleSearchForm = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    //console.log(inputs.description);
-    setSearchForm((values) => ({ ...values, [name]: value }));
-    //console.log("after change" + inputs.description);
-    console.log("title")
-    console.log(searchForm.title)
-    console.log("title")
-  }
+  }, [])
 
   console.log(isStudent)
-
-  console.log("search")
-  console.log(searchedPost)
-  console.log("search done")
 
   function lower(obj) {
     var i = 0;
@@ -107,13 +98,16 @@ const Dashboard = () => {
 
 
   return (
+
     <body style={{ backgroundColor: "#edf1f5" }}>
+
       <Container >
+
         <Row>
-          <Col md="7">
+          <Col md="8">
             <div className="home">
               <div className="feed_warp">
-                {searchedPost.map((post, index) =>
+                {samplePost.map((post, index2) =>
                 (
                   <div className="dashboard_bar">
                     {
@@ -134,12 +128,15 @@ const Dashboard = () => {
                                   </span>
                                   <span className="last_name">
                                     {post_1.last_name}
-                                  </span>
 
+                                  </span>
                                 </Link>
-                                <div className="comment_body">
-                                  {post.body}
-                                </div>
+                                <Link to={`/PostView/${post.id}`}>
+                                  <div className="comment_title">
+                                    {post.title}
+                                  </div>
+                                </Link>
+
                                 <div className="tags_body">
                                   {post.tags.map((tag, index) => (
 
@@ -166,18 +163,10 @@ const Dashboard = () => {
               </div>
             </div>
           </Col>
-          <Col md="2">
-
-            <PostForm />
-
-            <Label>Search :
-              <input
-                type="text"
-                name="title"
-                value={searchForm.title || ""}
-                onChange={handleSearchForm}
-              />
-            </Label>
+          <Col>
+            <div className="button_form">
+              <Containers triggerText={triggerText} onSubmit={onSubmit} />
+            </div>
           </Col>
         </Row>
 
@@ -187,66 +176,67 @@ const Dashboard = () => {
   );
 }
 
-const PostForm = () => {
+// const PostForm = () => {
 
-  const [postForm, setPostForm] = useState({});
+//   const [postForm, setPostForm] = useState({});
 
-  const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    //console.log(inputs.description);
-    setPostForm((values) => ({ ...values, [name]: value }));
-    //console.log("after change" + inputs.description);
-  };
+//   const handleChange = (event) => {
+//     const name = event.target.name;
+//     const value = event.target.value;
+//     //console.log(inputs.description);
+//     setPostForm((values) => ({ ...values, [name]: value }));
+//     //console.log("after change" + inputs.description);
+//   };
 
-  const handleCreatePost = (event) => {
-    event.preventDefault();
-    const data = {
-      title: postForm.title,
-      body: postForm.description,
+//   const handleCreatePost = (event) => {
+//     event.preventDefault();
+//     const data = {
+//       title: postForm.title,
+//       body: postForm.description,
 
-    };
-    console.log(data);
-    post_POST(data).then(() => {
-      getPost().then((resp) => {
-        setPostForm(resp.data);
+//     };
+//     console.log(data);
+//     post_POST(data).then(() => {
+//       getPost().then((resp) => {
+//         setPostForm(resp.data);
 
-      });
-      console.log("created")
-      console.log(data)
-    });
-
-
-  };
-  return (
-    <>
-      <form onSubmit={handleCreatePost}>
-        <h1>Create post</h1>
-        <Label>Title:
-
-          <input
-            type="text"
-            name="title"
-            value={postForm.title || ""}
-            onChange={handleChange}
-          />
-        </Label>
-
-        <Label>Description:
-
-          <input
-            type="text"
-            name="body"
-            value={postForm.body || ""}
-            onChange={handleChange}
-          />
-        </Label>
+//       });
+//       console.log("created")
+//       console.log(data)
+//     });
 
 
-        <input type="submit" />
-      </form>
-    </>
-  )
-}
+//   };
+//   return (
+//     <>
+//       <form onSubmit={handleCreatePost}>
+//         <h1>Create post</h1>
+//         <Label>Title:
+
+//           <input
+//             type="text"
+//             name="title"
+//             value={postForm.title || ""}
+//             onChange={handleChange}
+//           />
+//         </Label>
+
+//         <Label>Description:
+
+//           <input
+//             type="text"
+//             name="body"
+//             value={postForm.body || ""}
+//             onChange={handleChange}
+//           />
+//         </Label>
+
+
+//         <input type="submit" />
+//       </form>
+//     </>
+//   )
+// }
+
 
 export default Dashboard;

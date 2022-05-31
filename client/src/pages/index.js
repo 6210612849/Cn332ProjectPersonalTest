@@ -7,4 +7,5 @@ export { default as GoogleCalendar } from "./GoogleCalendar";
 export { default as Profile } from "./Profile";
 export { default as Documents } from "./Documents";
 export { default as ProfileView } from "./ProfileView";
+export { default as PostView } from "./PostView";
 export { default as DashboardTags } from "./DashboardTags";
